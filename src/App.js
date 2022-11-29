@@ -32,7 +32,7 @@ function App() {
     });
   };
 
-  const WinMessage = () => {
+  const WinDrawMessage = () => {
     return (
       <motion.div
         initial={{ x: 0 }}
@@ -40,9 +40,22 @@ function App() {
         transition={{ duration: 1 }}
         className=" mt-4 text-3xl tracking-widest font-mono text-green-600 font-bold"
       >
-        {winner && `Player ${winner?.val + 1} wins!`}
+        {winner
+          ? `Player ${winner?.val + 1} wins!`
+          : isDraw()
+          ? `Its Draw`
+          : ""}
       </motion.div>
     );
+  };
+
+  const isDraw = () => {
+    const allFilled = board.flat().indexOf(null);
+    if (allFilled == -1 && !winner) {
+      //all slots filled and there is not winner - its a isDraw
+      return true;
+    }
+    return false;
   };
 
   const PlayerTurnMessage = () => {
@@ -119,9 +132,16 @@ function App() {
                     }}
                   >
                     {/* {rowIndex + " " + colIndex} */}
-                    <div className="text-6xl min-h-full min-w-full items-center justify-center flex">
+                    <motion.div
+                      intitial={{ x: 0, scale: 0, opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      animate={{ x: 0, scale: [1.2, 0.8, 1] }}
+                      transition={{ duration: 0.5 }}
+                      viewport={{ once: true }}
+                      className="text-6xl min-h-full min-w-full items-center justify-center flex"
+                    >
                       {board[rowIndex][colIndex]}
-                    </div>
+                    </motion.div>
                   </div>
                 );
               })}
@@ -142,7 +162,7 @@ function App() {
         >
           TicTacToe
         </motion.div>
-        <WinMessage />
+        <WinDrawMessage />
         <BoardView />
         <PlayerTurnMessage />
         <Footer />
